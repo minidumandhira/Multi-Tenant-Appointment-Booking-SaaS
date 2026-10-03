@@ -27,6 +27,8 @@ export default function ManageBusinessPage() {
   const [business, setBusiness] = useState<Business | null>(null);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   useEffect(() => {
     const fetchBusiness = async () => {
@@ -45,8 +47,9 @@ export default function ManageBusinessPage() {
         .single();
 
       if (error || !data) {
-        alert("Business not found.");
-        router.push("/dashboard");
+        setError("Business not found or you do not have access to it.");
+        setLoading(false);
+        setTimeout(() => router.replace("/dashboard/business"), 1200);
         return;
       }
 
@@ -67,22 +70,36 @@ export default function ManageBusinessPage() {
     }
 
     setDeleting(true);
+    setError("");
 
-    const { error } = await supabase
-      .from("businesses")
-      .delete()
-      .eq("id", id);
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
 
-    if (error) {
-      alert(error.message);
+    if (!user) {
+      setError("Your session has expired. Please log in again.");
       setDeleting(false);
       return;
     }
 
-    alert("Business deleted successfully!");
+    const { error } = await supabase
+      .from("businesses")
+      .delete()
+      .eq("id", id)
+      .eq("owner_id", user.id);
 
-    router.push("/dashboard");
-    router.refresh();
+    if (error) {
+      setError(error.message);
+      setDeleting(false);
+      return;
+    }
+
+    setSuccess("Business deleted successfully.");
+
+    setTimeout(() => {
+      router.push("/dashboard/business");
+      router.refresh();
+    }, 500);
   };
 
   if (loading) {
@@ -100,6 +117,18 @@ export default function ManageBusinessPage() {
   return (
     <main className="min-h-screen bg-black-50 p-8">
       <div className="mx-auto max-w-3xl rounded-lg bg-black-100 p-8 shadow">
+        {error && (
+          <p className="mb-4 text-red-600" role="alert">
+            {error}
+          </p>
+        )}
+
+        {success && (
+          <p className="mb-4 text-green-600" role="status">
+            {success}
+          </p>
+        )}
+
         <h1 className="text-3xl font-bold">
           {business.name}
         </h1>
@@ -111,7 +140,7 @@ export default function ManageBusinessPage() {
         )}
 
         <div className="mt-6 space-y-3">
-            
+
           <p>
             <strong>Phone:</strong>{" "}
             {business.phone || "Not provided"}
@@ -148,24 +177,33 @@ export default function ManageBusinessPage() {
           </p>
         </div>
 
-        <div className="mt-8 flex gap-3">
-          <button
-            onClick={() =>
-              router.push(`/dashboard/business/${id}/edit`)
-            }
-            className="rounded-md bg-pink-500 px-4 py-2 text-white hover:bg-pink-800"
-          >
-            Edit Business
-          </button>
+       <div className="mt-8 flex gap-3">
+  <button
+    onClick={() =>
+      router.push(`/dashboard/business/${id}/edit`)
+    }
+    className="rounded-md bg-pink-500 px-4 py-2 text-white hover:bg-gray-800"
+  >
+    Edit Business
+  </button>
 
-          <button
-            onClick={handleDelete}
-            disabled={deleting}
-            className="rounded-md bg-red-600 px-4 py-2 text-white hover:bg-red-700 disabled:opacity-50"
-          >
-            {deleting ? "Deleting..." : "Delete Business"}
-          </button>
-        </div>
+  <button
+    onClick={() =>
+      router.push(`/dashboard/business/${id}/services`)
+    }
+    className="rounded-md bg-green-600 px-4 py-2 text-white hover:bg-blue-700"
+  >
+    Services
+  </button>
+
+  <button
+    onClick={handleDelete}
+    disabled={deleting}
+    className="rounded-md bg-red-600 px-4 py-2 text-white hover:bg-red-700 disabled:opacity-50"
+  >
+    {deleting ? "Deleting..." : "Delete Business"}
+  </button>
+</div>
       </div>
     </main>
   );

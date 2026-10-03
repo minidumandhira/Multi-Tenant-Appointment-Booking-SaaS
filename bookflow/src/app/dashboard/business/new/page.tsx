@@ -17,16 +17,29 @@ export default function NewBusinessPage() {
     const [address, setAddress] = useState("");
     const [city, setCity] = useState("");
     const [country, setCountry] = useState("");
+    const [saving, setSaving] = useState(false);
+    const [error, setError] = useState("");
+    const [success, setSuccess] = useState("");
 
    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
   e.preventDefault();
+    setError("");
+    setSuccess("");
+
+    if (!name.trim()) {
+        setError("Business name is required.");
+        return;
+    }
+
+    setSaving(true);
 
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
   if (!user) {
-    alert("You must be logged in.");
+        setError("You must be logged in.");
+        setSaving(false);
     return;
   }
 
@@ -34,7 +47,7 @@ export default function NewBusinessPage() {
     .from("businesses")
     .insert({
       owner_id: user.id,
-      name,
+    name: name.trim(),
       description,
       phone,
       email,
@@ -45,11 +58,12 @@ export default function NewBusinessPage() {
     });
 
   if (error) {
-    alert(error.message);
+        setError(error.message);
+        setSaving(false);
     return;
   }
 
-  alert("Business created successfully!");
+    setSuccess("Business created successfully.");
 
   router.push("/dashboard/business");
   router.refresh();
@@ -64,6 +78,18 @@ export default function NewBusinessPage() {
                 <h1 className="text-3xl font-bold">
                     Create Your Business
                 </h1>
+
+                {error && (
+                    <p className="mt-4 text-red-600" role="alert">
+                        {error}
+                    </p>
+                )}
+
+                {success && (
+                    <p className="mt-4 text-green-600" role="status">
+                        {success}
+                    </p>
+                )}
 
                 <p className="mt-2 text-gray-600">
                     Add your business details to get started with BookFlow.
@@ -185,9 +211,10 @@ export default function NewBusinessPage() {
 
                     <button
                         type="submit"
-                        className="w-full rounded-md bg-pink-500 py-2 text-white hover:bg-green-800"
+                        disabled={saving}
+                        className="w-full rounded-md bg-green-600 py-2 text-white hover:bg-green-700 disabled:opacity-50"
                     >
-                        Create Business
+                        {saving ? "Creating..." : "Create Business"}
                     </button>
                 </form>
             </div>
