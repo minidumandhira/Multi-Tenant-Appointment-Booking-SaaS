@@ -1,34 +1,100 @@
-import { createClient } from "@/lib/supabase/server";
+"use client";
 
-type Props = {
-  params: Promise<{
-    id: string;
-  }>;
+import { createClient } from "@/lib/supabase/client";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+
+type Business = {
+  id: string;
+  name: string;
+  description: string | null;
+  phone: string | null;
+  email: string | null;
+  website: string | null;
+  address: string | null;
+  city: string | null;
+  country: string | null;
+  timezone: string | null;
 };
 
-export default async function ManageBusinessPage({ params }: Props) {
-  const { id } = await params;
+export default function ManageBusinessPage() {
+  const supabase = createClient();
+  const router = useRouter();
+  const params = useParams();
 
-  const supabase = await createClient();
+  const id = params.id as string;
 
-  const { data: business, error } = await supabase
-    .from("businesses")
-    .select("*")
-    .eq("id", id)
-    .single();
+  const [business, setBusiness] = useState<Business | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [deleting, setDeleting] = useState(false);
 
-  if (error || !business) {
+  useEffect(() => {
+    const fetchBusiness = async () => {
+      const { data: userData } = await supabase.auth.getUser();
+
+      if (!userData.user) {
+        router.push("/login");
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from("businesses")
+        .select("*")
+        .eq("id", id)
+        .eq("owner_id", userData.user.id)
+        .single();
+
+      if (error || !data) {
+        alert("Business not found.");
+        router.push("/dashboard");
+        return;
+      }
+
+      setBusiness(data);
+      setLoading(false);
+    };
+
+    fetchBusiness();
+  }, [id, router, supabase]);
+
+  const handleDelete = async () => {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this business?"
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    setDeleting(true);
+
+    const { error } = await supabase
+      .from("businesses")
+      .delete()
+      .eq("id", id);
+
+    if (error) {
+      alert(error.message);
+      setDeleting(false);
+      return;
+    }
+
+    alert("Business deleted successfully!");
+
+    router.push("/dashboard");
+    router.refresh();
+  };
+
+  if (loading) {
     return (
       <main className="min-h-screen p-8">
-        <h1 className="text-3xl font-bold">
-          Business Not Found
-        </h1>
-
-        <p className="mt-4 text-gray-600">
-          The business could not be found.
-        </p>
+        <p>Loading business...</p>
       </main>
     );
+  }
+
+  if (!business) {
+    return null;
   }
 
   return (
@@ -45,6 +111,7 @@ export default async function ManageBusinessPage({ params }: Props) {
         )}
 
         <div className="mt-6 space-y-3">
+            
           <p>
             <strong>Phone:</strong>{" "}
             {business.phone || "Not provided"}
@@ -79,6 +146,25 @@ export default async function ManageBusinessPage({ params }: Props) {
             <strong>Timezone:</strong>{" "}
             {business.timezone || "Not provided"}
           </p>
+        </div>
+
+        <div className="mt-8 flex gap-3">
+          <button
+            onClick={() =>
+              router.push(`/dashboard/business/${id}/edit`)
+            }
+            className="rounded-md bg-pink-500 px-4 py-2 text-white hover:bg-pink-800"
+          >
+            Edit Business
+          </button>
+
+          <button
+            onClick={handleDelete}
+            disabled={deleting}
+            className="rounded-md bg-red-600 px-4 py-2 text-white hover:bg-red-700 disabled:opacity-50"
+          >
+            {deleting ? "Deleting..." : "Delete Business"}
+          </button>
         </div>
       </div>
     </main>
