@@ -206,6 +206,15 @@ export default function ManageBusinessPage() {
   </button>
 
   <button
+    onClick={() =>
+      router.push(`/dashboard/business/${id}/hours`)
+    }
+    className="rounded-md bg-purple-600 px-4 py-2 text-white hover:bg-purple-700"
+  >
+    Business Hours
+  </button>
+
+  <button
     onClick={handleDelete}
     disabled={deleting}
     className="rounded-md bg-red-600 px-4 py-2 text-white hover:bg-red-700 disabled:opacity-50"
