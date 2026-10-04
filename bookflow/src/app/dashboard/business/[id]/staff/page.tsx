@@ -68,12 +68,12 @@ export default function StaffPage() {
   }, [businessId, router, supabase]);
 
   return (
-    <main className="min-h-screen bg-black-50 p-8">
+    <main className="min-h-screen bg-black p-8">
       <div className="mx-auto max-w-5xl">
         <div className="flex items-center justify-between gap-4">
           <div>
             <h1 className="text-3xl font-bold">Staff</h1>
-            <p className="mt-2 text-gray-600">
+            <p className="mt-2 text-gray-200">
               Manage the people who provide your business services.
             </p>
           </div>
@@ -93,11 +93,11 @@ export default function StaffPage() {
         )}
 
         {loading ? (
-          <p className="mt-8 text-gray-600">Loading staff...</p>
+          <p className="mt-8 text-white">Loading staff...</p>
         ) : staff.length === 0 ? (
-          <div className="mt-8 rounded-lg border bg-white p-8 text-center shadow-sm">
+          <div className="mt-8 rounded-lg border bg-gray-800 p-8 text-center shadow-sm">
             <h2 className="text-xl font-semibold">No staff members yet</h2>
-            <p className="mt-2 text-gray-600">
+            <p className="mt-2 text-white-100">
               Add your first staff member to get started.
             </p>
             <button
@@ -112,22 +112,24 @@ export default function StaffPage() {
             {staff.map((member) => (
               <div
                 key={member.id}
-                className="rounded-lg border bg-white p-6 shadow-sm"
+                className="rounded-lg border bg-gray-800 p-6 shadow-sm"
               >
                 <div className="flex items-start justify-between gap-3">
-                  <h2 className="text-xl font-semibold">{member.name}</h2>
+                  <h2 className="text-xl font-semibold" text-white>
+                    {member.name}
+                  </h2>
                   <span
                     className={`rounded-full px-2 py-1 text-xs font-medium ${
                       member.is_active
-                        ? "bg-green-100 text-green-800"
-                        : "bg-gray-100 text-gray-700"
+                        ? "bg-green-700 text-white"
+                        : "bg-gray-300 text-gray-700"
                     }`}
                   >
                     {member.is_active ? "Active" : "Inactive"}
                   </span>
                 </div>
 
-                <div className="mt-4 space-y-2 text-sm text-gray-700">
+                <div className="mt-4 space-y-2 text-sm text-white-100">
                   <p>
                     <strong>Email:</strong> {member.email || "Not provided"}
                   </p>
@@ -145,7 +147,7 @@ export default function StaffPage() {
                       `/dashboard/business/${businessId}/staff/${member.id}`
                     )
                   }
-                  className="mt-5 w-full rounded-md border border-gray-300 px-4 py-2 hover:bg-gray-100"
+                  className="mt-5 w-full rounded-md border border-pink-500 bg-pink-500 px-4 py-2 hover:bg-pink-800 text-white"
                 >
                   Manage Staff
                 </button>

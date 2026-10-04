@@ -105,7 +105,7 @@ export default function NewStaffPage() {
 
   return (
     <main className="min-h-screen bg-black-50 p-8">
-      <div className="mx-auto max-w-2xl rounded-lg bg-white p-8 shadow">
+      <div className="mx-auto max-w-2xl rounded-lg bg-gray-800 p-8 shadow">
         <h1 className="text-3xl font-bold">Add Staff</h1>
         <p className="mt-2 text-gray-600">
           Add a person who provides services for this business.

@@ -134,7 +134,7 @@ export default function ServiceDetailPage() {
   if (error && !service) {
     return (
       <main className="min-h-screen bg-black-50 p-8">
-        <div className="mx-auto max-w-2xl rounded-lg bg-white p-8 shadow">
+        <div className="mx-auto max-w-2xl rounded-lg bg-gray-800 p-8 shadow">
           <p className="text-red-600" role="alert">
             {error}
           </p>
@@ -152,7 +152,7 @@ export default function ServiceDetailPage() {
 
   return (
     <main className="min-h-screen bg-black-50 p-8">
-      <div className="mx-auto max-w-2xl rounded-lg bg-white p-8 shadow">
+      <div className="mx-auto max-w-2xl rounded-lg bg-gray-800 p-8 shadow">
         {error && (
           <p className="mb-4 text-red-600" role="alert">
             {error}
@@ -168,7 +168,7 @@ export default function ServiceDetailPage() {
         <h1 className="text-3xl font-bold">{service.name}</h1>
 
         {service.description && (
-          <p className="mt-4 text-gray-600">{service.description}</p>
+          <p className="mt-4 text-gray-300">{service.description}</p>
         )}
 
         <div className="mt-6 space-y-3">
@@ -204,7 +204,7 @@ export default function ServiceDetailPage() {
             onClick={() =>
               router.push(`/dashboard/business/${businessId}/services`)
             }
-            className="rounded-md border border-gray-300 px-4 py-2 hover:bg-gray-100"
+            className="rounded-md border border-gray-300 px-4 py-2 hover:bg-gray-700"
           >
             Back to Services
           </button>

@@ -118,14 +118,14 @@ export default function ServicesPage() {
             {services.map((service) => (
               <div
                 key={service.id}
-                className="rounded-lg border bg-white p-6 shadow-sm"
+                className="rounded-lg border bg-gray-800 p-6 shadow-sm"
               >
                 <h2 className="text-xl font-semibold">
                   {service.name}
                 </h2>
 
                 {service.description && (
-                  <p className="mt-2 text-gray-600">
+                  <p className="mt-2 text-gray-300">
                     {service.description}
                   </p>
                 )}
@@ -148,7 +148,7 @@ export default function ServicesPage() {
                       `/dashboard/business/${businessId}/services/${service.id}`
                     )
                   }
-                  className="mt-5 w-full rounded-md border border-gray-300 px-4 py-2 hover:bg-gray-100"
+                  className="mt-5 w-full rounded-md border border-gray-300 bg-gray-700 px-4 py-2 hover:bg-gray-800"
                 >
                   Manage Service
                 </button>
