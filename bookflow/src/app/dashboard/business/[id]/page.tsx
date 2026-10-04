@@ -197,6 +197,15 @@ export default function ManageBusinessPage() {
   </button>
 
   <button
+    onClick={() =>
+      router.push(`/dashboard/business/${id}/staff`)
+    }
+    className="rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+  >
+    Staff
+  </button>
+
+  <button
     onClick={handleDelete}
     disabled={deleting}
     className="rounded-md bg-red-600 px-4 py-2 text-white hover:bg-red-700 disabled:opacity-50"
