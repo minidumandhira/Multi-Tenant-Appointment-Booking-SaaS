@@ -104,8 +104,11 @@ export default function ManageBusinessPage() {
 
   if (loading) {
     return (
-      <main className="min-h-screen p-8">
-        <p>Loading business...</p>
+      <main className="min-h-screen bg-[#070a12] p-6 text-slate-300 sm:p-10">
+        <div className="mx-auto max-w-5xl animate-pulse">
+          <div className="h-8 w-48 rounded-lg bg-white/[0.08]" />
+          <div className="mt-8 h-72 rounded-2xl border border-white/[0.07] bg-[#101624]" />
+        </div>
       </main>
     );
   }
@@ -115,74 +118,77 @@ export default function ManageBusinessPage() {
   }
 
   return (
-    <main className="min-h-screen bg-black-50 p-8">
-      <div className="mx-auto max-w-3xl rounded-lg bg-black-100 p-8 shadow">
+    <main className="min-h-screen bg-[#070a12] p-5 text-slate-100 sm:p-8">
+      <div className="mx-auto max-w-5xl">
+        <button
+          onClick={() => router.push("/dashboard/business")}
+          className="mb-6 text-sm text-slate-400 transition hover:text-white"
+        >
+          <span aria-hidden="true">&larr;</span> Back to Businesses
+        </button>
+
+        <div className="overflow-hidden rounded-2xl border border-white/[0.08] bg-[#101624] shadow-2xl shadow-black/20">
+          <div className="border-b border-white/[0.07] bg-gradient-to-r from-pink-500/[0.12] via-transparent to-blue-500/[0.1] px-6 py-7 sm:px-8">
         {error && (
-          <p className="mb-4 text-red-600" role="alert">
+          <p className="mb-5 rounded-lg border border-rose-400/20 bg-rose-400/10 p-3 text-sm text-rose-200" role="alert">
             {error}
           </p>
         )}
 
         {success && (
-          <p className="mb-4 text-green-600" role="status">
+          <p className="mb-5 rounded-lg border border-emerald-400/20 bg-emerald-400/10 p-3 text-sm text-emerald-200" role="status">
             {success}
           </p>
         )}
 
-        <h1 className="text-3xl font-bold">
+        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-pink-300">
+          Business workspace
+        </p>
+        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
           {business.name}
         </h1>
 
         {business.description && (
-          <p className="mt-4 text-pink-600">
+          <p className="mt-3 max-w-2xl text-sm text-slate-400">
             {business.description}
           </p>
         )}
+          </div>
 
-        <div className="mt-6 space-y-3">
+        <div className="grid gap-4 px-6 py-7 sm:grid-cols-2 sm:px-8 lg:grid-cols-3">
+          <div className="rounded-xl border border-white/[0.07] bg-white/[0.03] p-4">
+            <p className="text-xs uppercase tracking-wider text-slate-500">Contact</p>
+            <div className="mt-3 space-y-2 text-sm text-slate-300">
+              <p><span className="text-slate-500">Phone</span><br />{business.phone || "Not provided"}</p>
+              <p><span className="text-slate-500">Email</span><br />{business.email || "Not provided"}</p>
+            </div>
+          </div>
 
-          <p>
-            <strong>Phone:</strong>{" "}
-            {business.phone || "Not provided"}
-          </p>
+          <div className="rounded-xl border border-white/[0.07] bg-white/[0.03] p-4">
+            <p className="text-xs uppercase tracking-wider text-slate-500">Location</p>
+            <div className="mt-3 space-y-2 text-sm text-slate-300">
+              <p><span className="text-slate-500">Address</span><br />{business.address || "Not provided"}</p>
+              <p><span className="text-slate-500">City / Country</span><br />{business.city || "Not provided"}{business.city && business.country ? ", " : ""}{business.country || ""}</p>
+            </div>
+          </div>
 
-          <p>
-            <strong>Email:</strong>{" "}
-            {business.email || "Not provided"}
-          </p>
-
-          <p>
-            <strong>Website:</strong>{" "}
-            {business.website || "Not provided"}
-          </p>
-
-          <p>
-            <strong>Address:</strong>{" "}
-            {business.address || "Not provided"}
-          </p>
-
-          <p>
-            <strong>City:</strong>{" "}
-            {business.city || "Not provided"}
-          </p>
-
-          <p>
-            <strong>Country:</strong>{" "}
-            {business.country || "Not provided"}
-          </p>
-
-          <p>
-            <strong>Timezone:</strong>{" "}
-            {business.timezone || "Not provided"}
-          </p>
+          <div className="rounded-xl border border-white/[0.07] bg-white/[0.03] p-4">
+            <p className="text-xs uppercase tracking-wider text-slate-500">Details</p>
+            <div className="mt-3 space-y-2 text-sm text-slate-300">
+              <p><span className="text-slate-500">Website</span><br />{business.website || "Not provided"}</p>
+              <p><span className="text-slate-500">Timezone</span><br />{business.timezone || "Not provided"}</p>
+            </div>
+          </div>
         </div>
 
-       <div className="mt-8 flex gap-3">
+        <div className="border-t border-white/[0.07] px-6 py-6 sm:px-8">
+          <p className="mb-4 text-sm font-medium text-white">Manage workspace</p>
+          <div className="flex flex-wrap gap-3">
   <button
     onClick={() =>
       router.push(`/dashboard/business/${id}/edit`)
     }
-    className="rounded-md bg-pink-500 px-4 py-2 text-white hover:bg-gray-800"
+    className="rounded-lg bg-pink-500 px-4 py-2.5 text-sm font-medium text-white shadow-lg shadow-pink-500/10 transition hover:bg-pink-400"
   >
     Edit Business
   </button>
@@ -191,7 +197,7 @@ export default function ManageBusinessPage() {
     onClick={() =>
       router.push(`/dashboard/business/${id}/services`)
     }
-    className="rounded-md bg-green-600 px-4 py-2 text-white hover:bg-blue-700"
+    className="rounded-lg border border-white/[0.1] bg-white/[0.05] px-4 py-2.5 text-sm font-medium text-slate-200 transition hover:bg-white/[0.1]"
   >
     Services
   </button>
@@ -200,7 +206,7 @@ export default function ManageBusinessPage() {
     onClick={() =>
       router.push(`/dashboard/business/${id}/staff`)
     }
-    className="rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+    className="rounded-lg border border-white/[0.1] bg-white/[0.05] px-4 py-2.5 text-sm font-medium text-slate-200 transition hover:bg-white/[0.1]"
   >
     Staff
   </button>
@@ -209,7 +215,7 @@ export default function ManageBusinessPage() {
     onClick={() =>
       router.push(`/dashboard/business/${id}/hours`)
     }
-    className="rounded-md bg-purple-600 px-4 py-2 text-white hover:bg-purple-700"
+    className="rounded-lg border border-white/[0.1] bg-white/[0.05] px-4 py-2.5 text-sm font-medium text-slate-200 transition hover:bg-white/[0.1]"
   >
     Business Hours
   </button>
@@ -218,7 +224,7 @@ export default function ManageBusinessPage() {
     onClick={() =>
       router.push(`/dashboard/business/${id}/customers`)
     }
-    className="rounded-md bg-teal-600 px-4 py-2 text-white hover:bg-teal-700"
+    className="rounded-lg border border-white/[0.1] bg-white/[0.05] px-4 py-2.5 text-sm font-medium text-slate-200 transition hover:bg-white/[0.1]"
   >
     Customers
   </button>
@@ -227,7 +233,7 @@ export default function ManageBusinessPage() {
     onClick={() =>
       router.push(`/dashboard/business/${id}/appointments`)
     }
-    className="rounded-md bg-orange-600 px-4 py-2 text-white hover:bg-orange-700"
+    className="rounded-lg border border-white/[0.1] bg-white/[0.05] px-4 py-2.5 text-sm font-medium text-slate-200 transition hover:bg-white/[0.1]"
   >
     Appointments
   </button>
@@ -235,11 +241,13 @@ export default function ManageBusinessPage() {
   <button
     onClick={handleDelete}
     disabled={deleting}
-    className="rounded-md bg-red-600 px-4 py-2 text-white hover:bg-red-700 disabled:opacity-50"
+    className="rounded-lg border border-rose-400/20 bg-rose-500/10 px-4 py-2.5 text-sm font-medium text-rose-300 transition hover:bg-rose-500/20 disabled:opacity-50"
   >
     {deleting ? "Deleting..." : "Delete Business"}
   </button>
-</div>
+          </div>
+        </div>
+      </div>
       </div>
     </main>
   );
