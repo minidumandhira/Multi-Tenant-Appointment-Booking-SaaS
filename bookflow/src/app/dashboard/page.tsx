@@ -109,7 +109,6 @@ export default function DashboardPage() {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     const fetchBusinesses = async () => {
@@ -227,13 +226,6 @@ export default function DashboardPage() {
     fetchBusinesses();
   }, [router, supabase]);
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-
-    router.push("/login");
-    router.refresh();
-  };
-
   const primaryBusinessId = dashboardData.primaryBusinessId;
   const businessRoute = "/dashboard/business";
   const serviceRoute = primaryBusinessId
@@ -242,22 +234,6 @@ export default function DashboardPage() {
   const appointmentRoute = primaryBusinessId
     ? `/dashboard/business/${primaryBusinessId}/appointments`
     : businessRoute;
-  const customerRoute = primaryBusinessId
-    ? `/dashboard/business/${primaryBusinessId}/customers`
-    : businessRoute;
-  const staffRoute = primaryBusinessId
-    ? `/dashboard/business/${primaryBusinessId}/staff`
-    : businessRoute;
-
-  const navigation = [
-    { label: "Dashboard", icon: "dashboard" as IconName, href: "/dashboard", active: true },
-    { label: "Businesses", icon: "business" as IconName, href: businessRoute },
-    { label: "Services", icon: "services" as IconName, href: serviceRoute },
-    { label: "Appointments", icon: "appointments" as IconName, href: appointmentRoute },
-    { label: "Customers", icon: "customers" as IconName, href: customerRoute },
-    { label: "Staff", icon: "staff" as IconName, href: staffRoute },
-  ];
-
   const statistics = [
     {
       label: "Total Businesses",
@@ -298,122 +274,7 @@ export default function DashboardPage() {
 
   return (
     <main className="min-h-screen bg-[#070a12] text-slate-100">
-      {sidebarOpen && (
-        <button
-          aria-label="Close navigation"
-          onClick={() => setSidebarOpen(false)}
-          className="fixed inset-0 z-30 bg-black/60 lg:hidden"
-        />
-      )}
-
-      <aside
-        className={`fixed inset-y-0 left-0 z-40 flex w-64 flex-col border-r border-white/[0.07] bg-[#0b0f1a] px-4 py-5 transition-transform duration-200 lg:translate-x-0 ${
-          sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
-      >
-        <div className="flex items-center gap-3 px-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-pink-500 via-fuchsia-500 to-blue-500 text-sm font-bold text-white shadow-lg shadow-fuchsia-500/20">
-            B
-          </div>
-          <div>
-            <p className="text-sm font-semibold tracking-wide text-white">BookFlow</p>
-            <p className="text-[11px] text-slate-500">Business workspace</p>
-          </div>
-        </div>
-
-        <nav className="mt-10 space-y-1" aria-label="Main navigation">
-          <p className="mb-3 px-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-600">
-            Workspace
-          </p>
-          {navigation.map((item) => (
-            <button
-              key={item.label}
-              onClick={() => {
-                setSidebarOpen(false);
-                router.push(item.href);
-              }}
-              className={`group flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm transition ${
-                item.active
-                  ? "bg-white/[0.09] text-white shadow-inner shadow-white/[0.03]"
-                  : "text-slate-400 hover:bg-white/[0.05] hover:text-white"
-              }`}
-            >
-              <Icon
-                name={item.icon}
-                className={`h-[18px] w-[18px] ${
-                  item.active ? "text-pink-300" : "text-slate-500 group-hover:text-slate-300"
-                }`}
-              />
-              <span>{item.label}</span>
-              {item.active && <span className="ml-auto h-1.5 w-1.5 rounded-full bg-pink-400" />}
-            </button>
-          ))}
-
-          <button
-            type="button"
-            disabled
-            title="Settings are not available yet"
-            className="group flex w-full cursor-not-allowed items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm text-slate-600"
-          >
-            <Icon name="settings" className="h-[18px] w-[18px] text-slate-600" />
-            <span>Settings</span>
-          </button>
-        </nav>
-
-        <div className="mt-auto border-t border-white/[0.07] pt-4">
-          <button
-            onClick={handleLogout}
-            className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-slate-400 transition hover:bg-rose-500/10 hover:text-rose-300"
-          >
-            <span className="flex h-7 w-7 items-center justify-center rounded-md bg-white/[0.06] text-xs font-semibold text-slate-300">
-              {"U"}
-            </span>
-            <span>Logout</span>
-            <Icon name="arrow" className="ml-auto h-4 w-4 rotate-180" />
-          </button>
-        </div>
-      </aside>
-
-      <div className="min-h-screen lg:pl-64">
-        <header className="sticky top-0 z-20 border-b border-white/[0.07] bg-[#070a12]/85 backdrop-blur-xl">
-          <div className="flex h-16 items-center justify-between px-5 sm:px-8">
-            <div className="flex items-center gap-3">
-              <button
-                onClick={() => setSidebarOpen(true)}
-                aria-label="Open navigation"
-                className="rounded-lg border border-white/[0.08] p-2 text-slate-300 hover:bg-white/[0.06] lg:hidden"
-              >
-                <Icon name="menu" />
-              </button>
-              <div>
-                <p className="text-sm font-medium text-white">Dashboard</p>
-                <p className="hidden text-xs text-slate-500 sm:block">BookFlow workspace overview</p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3">
-              <button
-                aria-label="Notifications"
-                className="relative rounded-lg border border-white/[0.08] p-2 text-slate-400 hover:bg-white/[0.06] hover:text-white"
-              >
-                <Icon name="bell" className="h-[18px] w-[18px]" />
-                <span className="absolute right-1.5 top-1.5 h-1.5 w-1.5 rounded-full bg-pink-400" />
-              </button>
-              <div className="hidden h-8 w-px bg-white/[0.08] sm:block" />
-              <div className="flex items-center gap-2.5">
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-pink-400 to-blue-500 text-xs font-semibold text-white">
-                  U
-                </div>
-                <div className="hidden sm:block">
-                  <p className="text-xs font-medium text-white">Workspace owner</p>
-                  <p className="text-[11px] text-slate-500">Administrator</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </header>
-
-        <div className="mx-auto max-w-[1440px] px-5 py-8 sm:px-8 lg:px-10">
+      <div className="mx-auto max-w-[1440px] px-5 py-8 sm:px-8 lg:px-10">
           <section className="flex flex-col justify-between gap-5 md:flex-row md:items-end">
             <div>
               <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-pink-300">
@@ -559,7 +420,6 @@ export default function DashboardPage() {
               </section>
             </>
           )}
-        </div>
       </div>
     </main>
   );
